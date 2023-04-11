@@ -1,15 +1,28 @@
 package com.cpan252.distributioncentre.controller;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cpan252.distributioncentre.model.DistributionCentre;
+import com.cpan252.distributioncentre.repository.DistributionCentreRepository;
+
+@RestController
+@RequestMapping(path = "/api/DistributionCentres", produces = "application/json")
 public class DistributionCentreController {
     
+    private final DistributionCentreRepository distributionCentreRepository;
+
+    public DistributionCentreController(DistributionCentreRepository distributionCentreRepository){
+        this.distributionCentreRepository = distributionCentreRepository;
+    }
+
+    @GetMapping
+    @ResponseBody
+    public Iterable<DistributionCentre> allCentres(){
+        
+        return distributionCentreRepository.findAll();
+    }
 }
