@@ -1,9 +1,9 @@
 package com.cpan252.distributioncentre.controller;
 
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cpan252.distributioncentre.model.DistributionCentre;
@@ -20,7 +20,6 @@ public class DistributionCentreController {
     }
 
     @GetMapping
-    @ResponseBody
     public Iterable<DistributionCentre> allCentres(){
         
         return distributionCentreRepository.findAll();
