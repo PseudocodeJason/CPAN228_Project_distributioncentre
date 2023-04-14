@@ -1,12 +1,10 @@
 package com.cpan252.distributioncentre.config;
 
-import java.security.Security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -43,9 +41,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests()
         .requestMatchers(toH2Console()).permitAll()
-        .requestMatchers("/api/DistributionCentres")
-        .hasRole("ADMIN").and().httpBasic();
+        // .requestMatchers("/api/DistributionCentres")
+        // .hasRole("USER")
+        .anyRequest().permitAll().and()
+        .formLogin()
+        .loginPage("/login")
+        .defaultSuccessUrl("http://localhost:8080/Centres")
+        .and().logout().logoutSuccessUrl("/");
         http.csrf().disable();
+        http.headers().frameOptions().disable();
         return http.build();
     }
 }
