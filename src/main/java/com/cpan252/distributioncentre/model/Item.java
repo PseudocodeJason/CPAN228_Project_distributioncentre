@@ -3,12 +3,15 @@ package com.cpan252.distributioncentre.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +25,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
 public class Item {
     public enum Brand {
         BALENCIAGA("Balenciaga"), STONEISLAND("Stone Island"), DIOR("Dior"), CHANEL("Chanel");
@@ -42,7 +44,7 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @NotBlank
     private String name;
     private Brand brand;
@@ -50,9 +52,12 @@ public class Item {
     private int yearofcreation;
     @DecimalMin(value = "1000.1", inclusive = true)
     private BigDecimal price;
-
     private int quantity;
-    
     @Builder.Default
     private LocalDate createdAt = LocalDate.now();
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "distribution_centre_id", nullable = false)
+    private DistributionCentre distributionCentre;
 }
