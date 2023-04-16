@@ -54,6 +54,11 @@ public class DistributionCentreController {
         return savedItem;
     }
 
+    // @DeleteMapping("/{id}")
+    // public void deleteCentre(@PathVariable("id") int id) {
+    //     distributionCentreRepository.deleteById(id);
+    // }
+    
     @DeleteMapping("/{centreId}/items/{itemId}")
     public ResponseEntity<Void> deleteItemFromCentre(@PathVariable int centreId, @PathVariable int itemId) {
         Optional<DistributionCentre> optionalDistributionCentre = distributionCentreRepository.findById(centreId);
@@ -76,6 +81,7 @@ public class DistributionCentreController {
         }
     }
     
+
     @GetMapping("/{id}/items/by-brand/{brand}")
     public ResponseEntity<List<Item>> getItemsByBrandForCentre(@PathVariable int id, @PathVariable String brand) {
         Optional<DistributionCentre> optionalDistributionCentre = distributionCentreRepository.findById(id);
@@ -120,6 +126,5 @@ public class DistributionCentreController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 }
