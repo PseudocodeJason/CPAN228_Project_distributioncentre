@@ -24,26 +24,46 @@ public class DistributioncentreApplication {
 	}
 
 	@Bean
-	public CommandLineRunner dataLoader(DistributionCentreRepository repository, ItemRepository repository2, UserRepository repository3, PasswordEncoder passwordEncoder){
+	public CommandLineRunner dataLoader(DistributionCentreRepository DCrepository, ItemRepository itemRepository, UserRepository repository3, PasswordEncoder passwordEncoder){
 		return args ->{
-			repository.save(DistributionCentre.builder()
+			var distributionCentre = DCrepository.save(DistributionCentre.builder()
 			.name("Yorkdale")
-			.item("Gown")
-			.available(50)
 			.longitude(235)
 			.latitude(110).build());
-			repository.save(DistributionCentre.builder()
-			.name("Yorkdale")
-			.item("Shirt")
-			.available(5)
-			.longitude(235)
-			.latitude(110).build());
-			repository2.save(Item.builder()
+			var distributionCentre2 = DCrepository.save(DistributionCentre.builder()
+			.name("SquareOne")
+			.longitude(231)
+			.latitude(100).build());
+			itemRepository.save(Item.builder()
+			.name("T-Shirt")
+			.brand(Brand.STONEISLAND)
+			.yearofcreation(2022)
+			.price(new BigDecimal("3000"))
+			.quantity(40)
+			.distributionCentre(distributionCentre).build());
+			itemRepository.save(Item.builder()
 			.name("Gown")
 			.brand(Brand.BALENCIAGA)
 			.yearofcreation(2022)
 			.price(new BigDecimal("2000"))
-			.quantity(50).build());
+			.quantity(20)
+			.distributionCentre(distributionCentre).build());
+			itemRepository.save(Item.builder()
+			.name("T-Shirt")
+			.brand(Brand.BALENCIAGA)
+			.yearofcreation(2022)
+			.price(new BigDecimal("3000"))
+			.quantity(40)
+			.distributionCentre(distributionCentre2).build());
+			itemRepository.save(Item.builder()
+			.name("Gown")
+			.brand(Brand.STONEISLAND)
+			.yearofcreation(2022)
+			.price(new BigDecimal("2000"))
+			.quantity(20)
+			.distributionCentre(distributionCentre2).build());
+			
+
 			repository3.save(User.builder()
 			.username("admin")
 			.password(passwordEncoder.encode("admin")).build());
