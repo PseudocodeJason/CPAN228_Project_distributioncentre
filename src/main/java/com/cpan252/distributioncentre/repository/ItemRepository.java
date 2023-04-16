@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.cpan252.distributioncentre.model.Item;
 
 @Repository
-public interface ItemRepository extends CrudRepository<Item, Long>{
+public interface ItemRepository extends CrudRepository<Item, Integer>{
     
 }
