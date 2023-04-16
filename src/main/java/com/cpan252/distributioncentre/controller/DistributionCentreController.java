@@ -1,6 +1,7 @@
 package com.cpan252.distributioncentre.controller;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import java.util.Optional;
+import org.springframework.http.ResponseEntity;
 
 import com.cpan252.distributioncentre.model.DistributionCentre;
 import com.cpan252.distributioncentre.model.Item;
@@ -47,4 +53,56 @@ public class DistributionCentreController {
         var savedItem = itemRepository.save(item);
         return savedItem;
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteCentre(@PathVariable("id") int id) {
+        distributionCentreRepository.deleteById(id);
+    }
+    
+    @GetMapping("/{id}/items/by-brand/{brand}")
+    public ResponseEntity<List<Item>> getItemsByBrandForCentre(@PathVariable int id, @PathVariable String brand) {
+        Optional<DistributionCentre> optionalDistributionCentre = distributionCentreRepository.findById(id);
+        if (optionalDistributionCentre.isPresent()) {
+            DistributionCentre distributionCentre = optionalDistributionCentre.get();
+            List<Item> items = distributionCentre.getItem();
+            List<Item> itemsByBrand = new ArrayList<>();
+            for (Item item : items) {
+                if (item.getBrand().toString().equalsIgnoreCase(brand)) {
+                    itemsByBrand.add(item);
+                }
+            }
+            if (itemsByBrand.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity.ok().body(itemsByBrand);
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    
+    @GetMapping("/{id}/items/by-name/{name}")
+    public ResponseEntity<List<Item>> getItemsByNameForCentre(@PathVariable int id, @PathVariable String name) {
+        Optional<DistributionCentre> optionalDistributionCentre = distributionCentreRepository.findById(id);
+        if (optionalDistributionCentre.isPresent()) {
+            DistributionCentre distributionCentre = optionalDistributionCentre.get();
+            List<Item> items = distributionCentre.getItem();
+            List<Item> itemsByName = new ArrayList<>();
+            for (Item item : items) {
+                if (item.getName().toString().equalsIgnoreCase(name)) {
+                    itemsByName.add(item);
+                }
+            }
+            if (itemsByName.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity.ok().body(itemsByName);
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 }
