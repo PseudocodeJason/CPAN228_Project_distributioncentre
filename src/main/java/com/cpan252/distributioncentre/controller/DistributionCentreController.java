@@ -58,12 +58,30 @@ public class DistributionCentreController {
         var savedItem = itemRepository.save(item);
         return savedItem;
     }
-
-    @DeleteMapping("/{id}")
-    public void deleteCentre(@PathVariable("id") int id) {
-        itemRepository.deleteById(id);
+    
+    @DeleteMapping("/{centreId}/items/{itemId}")
+    public ResponseEntity<Void> deleteItemFromCentre(@PathVariable int centreId, @PathVariable int itemId) {
+        Optional<DistributionCentre> optionalDistributionCentre = distributionCentreRepository.findById(centreId);
+        if (optionalDistributionCentre.isPresent()) {
+            DistributionCentre distributionCentre = optionalDistributionCentre.get();
+            Optional<Item> optionalItem = itemRepository.findById(itemId);
+            if (optionalItem.isPresent()) {
+                Item item = optionalItem.get();
+                if (item.getDistributionCentre().equals(distributionCentre)) {
+                    itemRepository.delete(item);
+                    return ResponseEntity.noContent().build();
+                } else {
+                    return ResponseEntity.badRequest().build();
+                }
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
     
+
     @GetMapping("/{id}/items/by-brand/{brand}")
     public ResponseEntity<List<Item>> getItemsByBrandForCentre(@PathVariable int id, @PathVariable String brand) {
         Optional<DistributionCentre> optionalDistributionCentre = distributionCentreRepository.findById(id);
@@ -108,6 +126,5 @@ public class DistributionCentreController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 }
