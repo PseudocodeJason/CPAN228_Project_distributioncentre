@@ -42,6 +42,26 @@ public class DistributionCentreController {
         return currentDistributionCentre.get().getItem();
     }
 
+    @GetMapping("/items")
+    public ResponseEntity<List<Item>> allItems(){
+        List<DistributionCentre> distributionCentres = (List<DistributionCentre>) distributionCentreRepository.findAll();
+        List<Item> allItems = new ArrayList<>();
+        
+        for (DistributionCentre distributionCentre : distributionCentres) {
+            List<Item> items = distributionCentre.getItem();
+            
+            for (Item item : items) {
+                    allItems.add(item);
+            }
+        }
+        
+        if (allItems.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(allItems);
+        }
+    }
+
     @PostMapping("/{id}/items")
     public ResponseEntity<Void> addItemToCentre(@PathVariable int id, @RequestBody Item item) {
         var currentDistributionCentre = distributionCentreRepository.findById(id);
@@ -132,4 +152,60 @@ public class DistributionCentreController {
         }
     }
 
+    @GetMapping("/{id}/items/by-brand-and-name/{brand}/{name}")
+    public ResponseEntity<List<Item>> getItemByBrandAndName (@PathVariable int id, @PathVariable String name, @PathVariable String brand){
+        Optional<DistributionCentre> optionalDistributionCentre = distributionCentreRepository.findById(id);
+        if (optionalDistributionCentre.isPresent()) {
+            DistributionCentre distributionCentre = optionalDistributionCentre.get();
+            List<Item> items = distributionCentre.getItem();
+            List<Item> itemsByName = new ArrayList<>();
+            List<Item> itemsByNameAndBrand = new ArrayList<>();
+            for (Item item : items) {
+                if (item.getName().toString().equalsIgnoreCase(name)) {
+                    itemsByName.add(item);
+                }
+            }
+            if (itemsByName.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            } 
+            else {
+                for (Item itemName : itemsByName) {
+                    if (itemName.getBrand().toString().equalsIgnoreCase(brand)) {
+                        itemsByNameAndBrand.add(itemName);
+                    }
+                }
+                if (itemsByNameAndBrand.isEmpty()) {
+                    return ResponseEntity.notFound().build();
+                } else {
+                    return ResponseEntity.ok().body(itemsByNameAndBrand);
+                }
+            }
+            
+        } 
+        else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/items/by-brand-and-name/{brand}/{name}")
+    public ResponseEntity<List<Item>> getItemByBrandAndNameAll (@PathVariable String name, @PathVariable String brand){
+        List<DistributionCentre> distributionCentres = (List<DistributionCentre>) distributionCentreRepository.findAll();
+        List<Item> matchingItems = new ArrayList<>();
+        
+        for (DistributionCentre distributionCentre : distributionCentres) {
+            List<Item> items = distributionCentre.getItem();
+            
+            for (Item item : items) {
+                if (item.getName().toString().equalsIgnoreCase(name) && item.getBrand().toString().equalsIgnoreCase(brand)) {
+                    matchingItems.add(item);
+                }
+            }
+        }
+        
+        if (matchingItems.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(matchingItems);
+        }
+    }
 }
