@@ -42,6 +42,7 @@ public class DistributioncentreApplication {
 			.name("Eaton Centre")
 			.longitude(44)
 			.latitude(-78).build());
+
 			itemRepository.save(Item.builder()
 			.name("T-Shirt")
 			.brand(Brand.STONEISLAND)
@@ -76,6 +77,13 @@ public class DistributioncentreApplication {
 			.yearofcreation(2022)
 			.price(new BigDecimal("2421"))
 			.quantity(4)
+			.distributionCentre(distributionCentre).build());
+			itemRepository.save(Item.builder()
+			.name("T-Shirt")
+			.brand(Brand.STONEISLAND)
+			.yearofcreation(2023)
+			.price(new BigDecimal("3100"))
+			.quantity(19)
 			.distributionCentre(distributionCentre).build());
 			
 			itemRepository.save(Item.builder()
@@ -198,6 +206,13 @@ public class DistributioncentreApplication {
 			.yearofcreation(2022)
 			.price(new BigDecimal("2345"))
 			.quantity(4)
+			.distributionCentre(distributionCentre4).build());
+			itemRepository.save(Item.builder()
+			.name("T-Shirt")
+			.brand(Brand.STONEISLAND)
+			.yearofcreation(2023)
+			.price(new BigDecimal("3100"))
+			.quantity(39)
 			.distributionCentre(distributionCentre4).build());
 
 			repository3.save(User.builder()
