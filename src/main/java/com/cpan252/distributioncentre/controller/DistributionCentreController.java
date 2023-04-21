@@ -80,6 +80,20 @@ public class DistributionCentreController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/{centreId}")
+    public ResponseEntity<Void> deleteDistributionCentre(@PathVariable int centreId){
+        Optional<DistributionCentre> centre = distributionCentreRepository.findById(centreId);
+        if (centre.isPresent()) {
+            // delete all items associated with the centre
+            centre.get().getItem().forEach(item -> itemRepository.delete(item));
+            // delete the centre
+            distributionCentreRepository.delete(centre.get());
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     
 
     @GetMapping("/{id}/items/by-brand/{brand}")
