@@ -8,23 +8,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import java.util.Optional;
-import org.springframework.http.ResponseEntity;
-
 import com.cpan252.distributioncentre.model.DistributionCentre;
 import com.cpan252.distributioncentre.model.Item;
-import com.cpan252.distributioncentre.model.dto.CreateCloth;
 import com.cpan252.distributioncentre.repository.DistributionCentreRepository;
 import com.cpan252.distributioncentre.repository.ItemRepository;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/DistributionCentre", produces = "application/json")
@@ -47,18 +39,17 @@ public class DistributionCentreController {
     @GetMapping("/{id}/items")
     public List<Item> getItemsForCentre(@PathVariable int id) {
         var currentDistributionCentre = distributionCentreRepository.findById(id);
-        var items = currentDistributionCentre.get().getItem();
-        return items;
+        return currentDistributionCentre.get().getItem();
     }
 
     @PostMapping("/{id}/items")
-    public Item addItemToCentre(@PathVariable int id, @RequestBody Item item) {
+    public ResponseEntity<Void> addItemToCentre(@PathVariable int id, @RequestBody Item item) {
         var currentDistributionCentre = distributionCentreRepository.findById(id);
         item.setDistributionCentre(currentDistributionCentre.get());
-        var savedItem = itemRepository.save(item);
-        return savedItem;
+        itemRepository.save(item);
+        return ResponseEntity.noContent().build();
     }
-    
+      
     @DeleteMapping("/{centreId}/items/{itemId}")
     public ResponseEntity<Void> deleteItemFromCentre(@PathVariable int centreId, @PathVariable int itemId) {
         Optional<DistributionCentre> optionalDistributionCentre = distributionCentreRepository.findById(centreId);
